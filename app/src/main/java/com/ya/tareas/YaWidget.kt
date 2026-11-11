@@ -1,6 +1,7 @@
 package com.ya.tareas
 
 import android.content.Context
+import android.content.Intent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -23,7 +24,7 @@ class YaWidget : GlanceAppWidget() {
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         val all = TaskRepo.pending(context)
         val streak = TaskRepo.streak(context)
-        provideContent { Content(all.take(4), all.size, streak) }
+        provideContent { Content(context, all.take(4), all.size, streak) }
     }
 }
 
@@ -43,9 +44,9 @@ private fun txt(c: Color, s: Int, bold: Boolean = false) =
     TextStyle(color = ColorProvider(c), fontSize = s.sp, fontWeight = if (bold) FontWeight.Bold else FontWeight.Normal)
 
 @Composable
-private fun Content(tasks: List<Task>, total: Int, streak: Int) {
+private fun Content(context: Context, tasks: List<Task>, total: Int, streak: Int) {
     Column(GlanceModifier.fillMaxSize().background(Color(0xFF18202F)).padding(12.dp)
-        .clickable(actionStartActivity<MainActivity>())) {
+        .clickable(actionStartActivity(Intent(context, MainActivity::class.java)))) {
         Row(GlanceModifier.fillMaxWidth()) {
             Text("Ya.", style = txt(Color.White, 18, true))
             Spacer(GlanceModifier.defaultWeight())
